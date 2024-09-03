@@ -13,27 +13,43 @@ public class Tarefa extends Observable {
 
     public void setEstado(EstadoTarefa estado) {
         this.estado = estado;
-        setChanged();  // Marca que o estado foi alterado
-        notifyObservers(estado.getEstado());  // Notifica os observadores sobre a mudança
+        setChanged();
+        notifyObservers(estado.getEstado());
     }
 
-    public void iniciar() {
-        estado.iniciar(this);
+    public boolean iniciar() {
+        if (estado instanceof EstadoTarefaNova) {
+            estado = EstadoTarefaEmProgresso.getInstance();
+            return true;
+        }
+        return false;
     }
 
-    public void pausar() {
-        estado.pausar(this);
+    public boolean pausar() {
+        if (estado instanceof EstadoTarefaEmProgresso) {
+            estado = EstadoTarefaPausada.getInstance();
+            return true;
+        }
+        return false;
     }
 
-    public void concluir() {
-        estado.concluir(this);
+    public boolean concluir() {
+        if (estado instanceof EstadoTarefaEmProgresso) {
+            estado = EstadoTarefaConcluida.getInstance();
+            return true;
+        }
+        return false;
     }
 
-    public void cancelar() {
-        estado.cancelar(this);
+    public boolean cancelar() {
+        if (estado instanceof EstadoTarefaEmProgresso) {
+            estado = EstadoTarefaCancelada.getInstance();
+            return true;
+        }
+        return false;
     }
 
-    public String getNomeEstado() {
-        return estado.getEstado();
+    public EstadoTarefa getEstado() {
+        return estado;
     }
 }
